@@ -1,0 +1,6 @@
+name: ContainerPerms
+version: 1.0.0
+main: io.github.twowr.containerperms.ContainerPerms
+description: A plugin for players to manage permission to their container
+author: 2wr
+api-version: '1.21.8'
