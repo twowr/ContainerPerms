@@ -17,6 +17,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
+import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.Material;
 
 import org.bukkit.entity.Player;
@@ -25,6 +27,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.EventPriority;
+
+import org.bukkit.event.Event.Result;
 
 public final class PlayerInteract implements Listener {
 	private final JavaPlugin plugin;
@@ -42,6 +46,12 @@ public final class PlayerInteract implements Listener {
 		if (!(targetState instanceof Container)) return;
 
 		Container targetContainer = (Container) targetState;
+		if (targetContainer.getInventory().getHolder() instanceof DoubleChest) {
+			DoubleChest dbcHolder = (DoubleChest) targetContainer.getInventory().getHolder();
+			if (dbcHolder.getLeftSide() == null) return;
+			if (!(dbcHolder.getLeftSide() instanceof Chest)) return;
+			targetContainer = (Chest) dbcHolder.getLeftSide();
+		}
 		Player targetPlayer = event.getPlayer();
 		String targetId = targetPlayer.getUniqueId().toString();
 
@@ -50,7 +60,7 @@ public final class PlayerInteract implements Listener {
 		if (event.getMaterial() != Material.STICK) {
 			if ((owner != null && !targetId.equals(owner)) && (allowed == null || (allowed != null && !allowed.contains(targetId)))) {
 				targetPlayer.sendMessage(ChatColor.RED + "You don't have access to this");
-				event.setCancelled(true);
+				event.setUseInteractedBlock(Result.DENY);
 			}
 			return;
 		}
