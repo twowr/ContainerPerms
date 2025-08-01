@@ -15,6 +15,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 public final class InventoryClick implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onInventoryClick(InventoryClickEvent event) {
+		if (event.getClickedInventory() == null) return;
+
 		InventoryHolder holder = event.getClickedInventory().getHolder();
 		if (!(holder instanceof ManagerMenu)) return;
 
