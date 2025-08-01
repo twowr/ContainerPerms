@@ -4,7 +4,7 @@
 
 	<groupId>io.github.twowr.containerperms</groupId>
 	<artifactId>container-perms</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>ContainerPerms</name>
 	<description>A plugin for players to manage permission to their container</description>
 
