@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.persistence.PersistentDataType;
 
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.Chest;
@@ -42,6 +43,7 @@ public final class BlockBreak implements Listener {
 
 		String owner = targetContainer.getPersistentDataContainer().get(new NamespacedKey(this.plugin, "owner"), PersistentDataType.STRING);
 		if (owner != null && !targetPlayer.getUniqueId().toString().equals(owner)) {
+			targetPlayer.playSound(targetPlayer.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
 			event.setCancelled(true);
 			targetPlayer.sendMessage(ChatColor.YELLOW + "bro you dont own this");
 		}

@@ -67,25 +67,27 @@ public final class ManagerMenu implements InventoryHolder {
 	
 	public void processInput(int slot) {
 		if (slot == 8) {
-			this.offset = Math.max(this.offset - 1, 0);
-
 			for (HumanEntity viewer: new ArrayList<>(this.inventory.getViewers())) {
 				if (viewer instanceof Player) {
 					Player player = (Player) viewer;
 					player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
 				}
 			}
+
+			this.offset = Math.max(this.offset - 1, 0);
+
 			return;
 		}
 		if (slot == this.invHeight * 9 - 1) {
-			this.offset = Math.min(this.offset + 1, Math.max(this.menuHeight - this.invHeight, 0));
-
 			for (HumanEntity viewer: new ArrayList<>(this.inventory.getViewers())) {
 				if (viewer instanceof Player) {
 					Player player = (Player) viewer;
 					player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
 				}
 			}
+
+			this.offset = Math.min(this.offset + 1, Math.max(this.menuHeight - this.invHeight, 0));
+
 			return;
 		}
 		if (this.offset * 9 + slot + 1 > this.menuHeight * 9) {
@@ -94,26 +96,36 @@ public final class ManagerMenu implements InventoryHolder {
 			return;
 		}
 		if (this.offset * 9 + slot == 9 + 4) {
-			this.container.getPersistentDataContainer().remove(new NamespacedKey(this.plugin, "owner"));
-			this.container.getPersistentDataContainer().remove(new NamespacedKey(this.plugin, "allowed"));
-
-			this.container.update(true);
-
-			closeMenu();
 			for (HumanEntity viewer: new ArrayList<>(this.inventory.getViewers())) {
 				if (viewer instanceof Player) {
 					Player player = (Player) viewer;
 					player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
 				}
 			}
+			
+			this.container.getPersistentDataContainer().remove(new NamespacedKey(this.plugin, "owner"));
+			this.container.getPersistentDataContainer().remove(new NamespacedKey(this.plugin, "allowed"));
+
+			this.container.update(true);
+
+			closeMenu();
 			return;
 		}
 		if (slot % 9 == 5) { //ad hoc
 			if (this.inventory == null || this.frame == null) return;
 
 			Material type = this.frame.get(this.offset * 9 + slot).getType();
-			SkullMeta headMeta = ((SkullMeta) this.frame.get(this.offset * 9 + slot - 2).getItemMeta()); 
-			if (headMeta == null) return;
+			ItemMeta meta = this.frame.get(this.offset * 9 + slot - 2).getItemMeta();
+			if (!(meta instanceof SkullMeta)) return;
+
+			for (HumanEntity viewer: new ArrayList<>(this.inventory.getViewers())) {
+				if (viewer instanceof Player) {
+					Player plr = (Player) viewer;
+					plr.playSound(plr.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
+				}
+			}
+
+			SkullMeta headMeta = ((SkullMeta) meta); 
 
 			OfflinePlayer player = headMeta.getOwningPlayer();
 			if (player == null) return;
@@ -133,12 +145,6 @@ public final class ManagerMenu implements InventoryHolder {
 
 			updateFrame();
 			this.container.update(true);
-			for (HumanEntity viewer: new ArrayList<>(this.inventory.getViewers())) {
-				if (viewer instanceof Player) {
-					Player plr = (Player) viewer;
-					plr.playSound(plr.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
-				}
-			}
 			return;
 		}
 	}

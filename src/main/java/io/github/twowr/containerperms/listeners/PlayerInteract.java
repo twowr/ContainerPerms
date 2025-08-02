@@ -10,6 +10,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import org.bukkit.Bukkit;
 
+import org.bukkit.Sound;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 
@@ -64,7 +65,10 @@ public final class PlayerInteract implements Listener {
 			}
 			return;
 		}
+
 		if (owner == null) {
+			targetPlayer.playSound(targetPlayer.getLocation(), Sound.UI_LOOM_SELECT_PATTERN, 1.0f, 1.0f);
+
 			targetContainer.getPersistentDataContainer().set(
 				new NamespacedKey(this.plugin, "owner"),
 				PersistentDataType.STRING,
@@ -82,9 +86,12 @@ public final class PlayerInteract implements Listener {
 		}
 
 		if (targetPlayer.getUniqueId().toString().equals(owner)) {
+			targetPlayer.playSound(targetPlayer.getLocation(), Sound.UI_LOOM_SELECT_PATTERN, 1.0f, 1.0f);
+			
 			ManagerMenu menu = new ManagerMenu(this.plugin, targetContainer, 6);
 			menu.openMenu(targetPlayer);
 		} else {
+			targetPlayer.playSound(targetPlayer.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
 			targetPlayer.sendMessage(ChatColor.YELLOW + "bro you dont own this");
 		}
 
