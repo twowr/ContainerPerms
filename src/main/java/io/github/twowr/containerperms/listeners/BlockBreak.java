@@ -9,6 +9,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
+import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 
 import org.bukkit.entity.Player;
 
@@ -30,6 +32,12 @@ public final class BlockBreak implements Listener {
 		if (!(targetState instanceof Container)) return;
 
 		Container targetContainer = (Container) targetState;
+		if (targetContainer.getInventory().getHolder() instanceof DoubleChest) {
+			DoubleChest dbcHolder = (DoubleChest) targetContainer.getInventory().getHolder();
+			if (dbcHolder.getLeftSide() == null) return;
+			if (!(dbcHolder.getLeftSide() instanceof Chest)) return;
+			targetContainer = (Chest) dbcHolder.getLeftSide();
+		}
 		Player targetPlayer = event.getPlayer();
 
 		String owner = targetContainer.getPersistentDataContainer().get(new NamespacedKey(this.plugin, "owner"), PersistentDataType.STRING);

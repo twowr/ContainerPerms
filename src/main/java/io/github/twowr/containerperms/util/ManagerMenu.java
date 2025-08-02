@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 
+import org.bukkit.Sound;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 
@@ -14,6 +15,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import org.bukkit.block.Container;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Inventory;
@@ -64,8 +66,31 @@ public final class ManagerMenu implements InventoryHolder {
 	}
 	
 	public void processInput(int slot) {
+		if (slot == 8) {
+			this.offset = Math.max(this.offset - 1, 0);
+
+			for (HumanEntity viewer: new ArrayList<>(this.inventory.getViewers())) {
+				if (viewer instanceof Player) {
+					Player player = (Player) viewer;
+					player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
+				}
+			}
+			return;
+		}
+		if (slot == this.invHeight * 9 - 1) {
+			this.offset = Math.min(this.offset + 1, Math.max(this.menuHeight - this.invHeight, 0));
+
+			for (HumanEntity viewer: new ArrayList<>(this.inventory.getViewers())) {
+				if (viewer instanceof Player) {
+					Player player = (Player) viewer;
+					player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
+				}
+			}
+			return;
+		}
 		if (this.offset * 9 + slot + 1 > this.menuHeight * 9) {
 			this.offset = Math.max(this.menuHeight - this.invHeight, 0);
+
 			return;
 		}
 		if (this.offset * 9 + slot == 9 + 4) {
@@ -75,6 +100,12 @@ public final class ManagerMenu implements InventoryHolder {
 			this.container.update(true);
 
 			closeMenu();
+			for (HumanEntity viewer: new ArrayList<>(this.inventory.getViewers())) {
+				if (viewer instanceof Player) {
+					Player player = (Player) viewer;
+					player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
+				}
+			}
 			return;
 		}
 		if (slot % 9 == 5) { //ad hoc
@@ -102,14 +133,12 @@ public final class ManagerMenu implements InventoryHolder {
 
 			updateFrame();
 			this.container.update(true);
-			return;
-		}
-		if (slot == 8) {
-			this.offset = Math.max(this.offset - 1, 0);
-			return;
-		}
-		if (slot == this.invHeight * 9 - 1) {
-			this.offset = Math.min(this.offset + 1, Math.max(this.menuHeight - this.invHeight, 0));
+			for (HumanEntity viewer: new ArrayList<>(this.inventory.getViewers())) {
+				if (viewer instanceof Player) {
+					Player plr = (Player) viewer;
+					plr.playSound(plr.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
+				}
+			}
 			return;
 		}
 	}
